@@ -1,0 +1,20 @@
+{
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "triggers": {
+      "Recurrence_Daily_8AM": {
+        "type": "Recurrence",
+        "recurrence": {
+          "frequency": "Week",
+          "interval": 1,
+          "schedule": {
+            "hours": ["8"],
+            "minutes": [0],
+            "weekDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+          },
+          "timeZone": "SA Pacific Standard Time"
+        }
+      }
+    }
+  }
+}

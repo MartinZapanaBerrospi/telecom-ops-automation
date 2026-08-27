@@ -1,0 +1,34 @@
+{
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "actions": {
+      "Check_Amount_Threshold": {
+        "type": "If",
+        "expression": {
+          "greater": [
+            "@triggerBody()?['MontoSolicitado']",
+            30.0
+          ]
+        },
+        "actions": {
+          "Post_Adaptive_Card_To_Teams": {
+            "type": "OpenApiConnection",
+            "inputs": {
+              "host": { "connectionName": "shared_teams" },
+              "operationId": "PostCardToConversation"
+            }
+          }
+        },
+        "else": {
+          "Auto_Approve_Adjustment": {
+            "type": "OpenApiConnection",
+            "inputs": {
+              "host": { "connectionName": "shared_oracle" },
+              "operationId": "ExecuteStoredProcedure"
+            }
+          }
+        }
+      }
+    }
+  }
+}

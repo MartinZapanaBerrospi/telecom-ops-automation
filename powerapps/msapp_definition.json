@@ -1,0 +1,26 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/powerapps/canvas-app.json",
+  "name": "TelecomPostBillingAdjustmentManager",
+  "displayName": "Claro - Gestor de Ajustes de Post Facturación",
+  "version": "1.2.0",
+  "environment": "Production",
+  "author": "Martín Zapana Berrospi",
+  "dataSources": [
+    {
+      "name": "AjustesPostFacturacion",
+      "type": "Dataverse / SharePoint",
+      "primaryKey": "IdAjuste"
+    },
+    {
+      "name": "FacturasEmitidas",
+      "type": "Oracle Database Direct Connector",
+      "primaryKey": "IdFactura"
+    }
+  ],
+  "components": [
+    "CorporateHeader",
+    "MetricKpiCard",
+    "AdjustmentStatusBadge",
+    "AuditHistoryTimeline"
+  ]
+}
