@@ -6,25 +6,33 @@
 [![Python Engine](https://img.shields.io/badge/Python-Automation%20Webhook-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
-> Suite corporativa de **Automatización de Procesos de Negocio (BPA)** y soporte operacional post-facturación en Telecomunicaciones, integrando **Canvas Apps en Power Apps, Cloud Flows en Power Automate, Tarjetas Adaptables en Microsoft Teams y motor Python**.
+> Proyecto personal de **Automatización de Procesos de Negocio (BPA)** y prueba de concepto (PoC) aplicada a operaciones post-facturación en telecomunicaciones, integrando **Power Apps (Canvas App), Power Automate (Cloud Flows), Tarjetas Adaptables en Microsoft Teams y procesamiento en Python**.
 
 ---
 
-## 🎯 Resumen Ejecutivo & Impacto de Negocio Cuantificado
+## 🎯 Contexto, Motivación & Planteamiento del Problema
 
-En operaciones masivas de telecomunicaciones, la gestión de ajustes por sobrefacturación y emisión de notas de crédito suele gestionarse mediante correos no estructurados y cadenas de aprobación manuales. Esto genera retrasos que superan los SLAs comerciales, falta de trazabilidad regulatoria ante **Osiptel** y riesgo de duplicidad en devoluciones.
+En las operaciones masivas de soporte y post-facturación en empresas de telecomunicaciones, la gestión de reclamos por facturación e incidencias comerciales (cobros no reconocidos, errores de tarificación en roaming o paquetes no imputados) suele enfrentarse a cuellos de botella: cadenas manuales de correos para autorizar notas de crédito, dispersión de planillas locales y riesgo de error por digitación manual.
 
-Esta suite automatiza el ciclo de vida completo de una solicitud de ajuste: desde el registro guiado con reglas de validación en tiempo real hasta la aprobación ejecutiva por Microsoft Teams y distribución automática de reportes gerenciales.
+Como estudiante de pregrado en **Ingeniería de Sistemas y Bachiller en Ciencias (Matemática)** en la Universidad Nacional de Ingeniería (UNI), desarrollé este proyecto como una **Prueba de Concepto (PoC) de extremo a extremo**. El objetivo es explorar y demostrar cómo la combinación de herramientas **Low-Code empresariales (Power Platform)** y **lenguajes de programación (Python)** permite modelar, validar y optimizar un flujo de trabajo operacional de alta exigencia.
 
-### 📈 Matriz de Resultados & Retorno de Inversión (ROI)
+### 📊 Simulación de Eficiencia Operativa (Validación de la PoC)
 
-| Métrica Operativa de Negocio | Antes (Gestión Tradicional vía Email/Planilla) | Con Suite Power Platform Automatizada | Impacto Cuantificado |
+Para evaluar el impacto de la arquitectura propuesta, se simuló un entorno operacional utilizando datasets de prueba estructurados en ciclos de corte (`C01`, `C15`, `C28`):
+
+| Dimensión Evaluada | Enfoque Manual Tradicional | Solución Diseñada (PoC) | Beneficio Observado en Pruebas |
 | :--- | :--- | :--- | :--- |
-| **Tiempo de Aprobación de Ajustes (Turnaround Time - TAT)** | 4.5 días hábiles promedio | **< 15 minutos** (Aprobación interactiva en Teams) | **⚡ -99.3% Tiempo de Espera** |
-| **Trazabilidad & Auditoría Regulatoria (Osiptel / SUNAT)** | Dispersa en buzones de correo y archivos locales | **100% Digitalizada y centralizada** con bitácora inmutable | **🛡️ 100% Compliance Regulatorio** |
-| **Generación y Distribución de Reporte Ejecutivo Diario** | 90 minutos diarios de armado manual | **0 minutos** (Programado 08:00 AM vía Cloud Flow) | **⏱️ +30 horas/mes ahorradas por analista** |
-| **Prevención de Doble Compensación / Fraude** | 2.3% reincidencias por falta de cruce previo | **0% duplicidades** (Validación instantánea en Power Fx) | **💰 Cero Duplicidad Financiera** |
-| **Satisfacción del Cliente en Reclamos (CSAT)** | 62% satisfacción en resolución de cobros | **94% satisfacción** por respuesta rápida y notificación SMS | **📈 +32 pts Incremento en CSAT** |
+| **Tiempo de Decisión en Ajustes** | Varios días en bandejas de correo | **Notificación interactiva en Teams** | **⚡ Decisión ágil (< 15 min en pruebas)** sin salir del entorno de colaboración |
+| **Integridad de Datos & Reglas** | Revisión manual sujeta a error | **Lógica reactiva con Power Fx** | **🛡️ 100% de consistencia:** bloquea montos que excedan la factura original |
+| **Trazabilidad & Auditoría** | Planillas locales no centralizadas | **Base de datos con bitácora** | **📋 Registro estructurado de cada acción**, usuario, fecha y dictamen |
+| **Consolidación de Reportería** | Formateo manual diario de tablas | **Pipeline Python (OpenPyXL)** | **⏱️ Generación en segundos** con formato ejecutivo listo para distribución |
+
+### 🛠️ Competencias Técnicas Demostradas en el Proyecto
+
+* **Power Apps & Power Fx:** Modelamiento de estado con variables globales y de contexto (`Set`, `UpdateContext`), colecciones en memoria (`ClearCollect`), funciones declarativas de búsqueda (`LookUp`), operaciones transaccionales con `Patch()` y control reactivo de propiedades de UI.
+* **Orquestación en Power Automate:** Flujos en nube instantáneos (V2) y programados (Recurrence), diseño de **Tarjetas Adaptables (Adaptive Cards)** en formato JSON para Microsoft Teams y lógica condicional de aprobación.
+* **Procesamiento de Datos con Python:** Análisis y transformación de datos con `pandas`, generación automatizada de reportes corporativos en Excel con `openpyxl` (estilos, paletas corporativas, fórmulas y anchos automáticos).
+* **Ingeniería de Procesos:** Modelamiento de flujos de negocio (BPMN/Mermaid), control de excepciones y diseño de reglas de negocio para jerarquías operativas.
 
 ---
 
