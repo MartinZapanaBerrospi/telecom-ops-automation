@@ -14,7 +14,7 @@
 
 En las operaciones masivas de soporte y post-facturación en empresas de telecomunicaciones, la gestión de reclamos por facturación e incidencias comerciales (cobros no reconocidos, errores de tarificación en roaming o paquetes no imputados) suele enfrentarse a cuellos de botella: cadenas manuales de correos para autorizar notas de crédito, dispersión de planillas locales y riesgo de error por digitación manual.
 
-Como estudiante de pregrado en **Ingeniería de Sistemas y Bachiller en Ciencias (Matemática)** en la Universidad Nacional de Ingeniería (UNI), desarrollé este proyecto como una **Prueba de Concepto (PoC) de extremo a extremo**. El objetivo es explorar y demostrar cómo la combinación de herramientas **Low-Code empresariales (Power Platform)** y **lenguajes de programación (Python)** permite modelar, validar y optimizar un flujo de trabajo operacional de alta exigencia.
+Como estudiante de pregrado en **Ingeniería de Sistemas (8vo Ciclo) y Bachiller en Ciencias (Matemática)** en la Universidad Nacional de Ingeniería (UNI), desarrollé este proyecto como una **Prueba de Concepto (PoC) de extremo a extremo**. El objetivo es explorar y demostrar cómo la combinación de herramientas **Low-Code empresariales (Power Platform)** y **lenguajes de programación (Python)** permite modelar, validar y optimizar un flujo de trabajo operacional de alta exigencia.
 
 ### 📊 Simulación de Eficiencia Operativa (Validación de la PoC)
 
@@ -125,6 +125,6 @@ python src/excel_report_styler.py
 ## 👨‍💻 Autor
 
 **Martín Zapana Berrospi**
-* 🎓 Bachiller en Ciencias (Matemática) & Estudiante de Ingeniería de Sistemas (8vo Ciclo) — **Universidad Nacional de Ingeniería (UNI)**
+* 🎓 Estudiante de Ingeniería de Sistemas (8vo Ciclo) & Bachiller en Ciencias (Matemática) — **Universidad Nacional de Ingeniería (UNI)**
 * 💼 LinkedIn: [martin-eduardo-zapana-berrospi](https://www.linkedin.com/in/martin-eduardo-zapana-berrospi/)
 * 🌐 Portafolio: [martinzapana.com](https://martinzapana.com)
