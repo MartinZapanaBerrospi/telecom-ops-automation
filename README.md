@@ -61,7 +61,7 @@ flowchart TD
   ```powerfx
   // Validación de tope máximo de ajuste según perfil del analista
   If(
-      Value(txtMontoAjuste.Text) > 500 && User().Email <> "jefatura.postfacturacion@claro.com.pe",
+      Value(txtMontoAjuste.Text) > 500 && User().Email <> "jefatura.postfacturacion@telecom.com",
       Notify("El monto supera el límite operativo para analistas. Se enviará a aprobación de jefatura.", NotificationType.Warning),
       Patch(
           'Ajustes Facturación',
@@ -85,12 +85,19 @@ flowchart TD
 
 ### 3. Motor de Automatización & Estilizador en Python (`src/`)
 * `src/automation_engine.py`: Simula el procesamiento de eventos webhook y confirmación de notas de crédito en el ERP.
-* `src/excel_report_styler.py`: Aplica formato corporativo OpenPyXL (paleta azul/rojo corporativo, fuentes Segoe UI, totales con fórmulas dinámicas y autoajuste de columnas).
+* `src/excel_report_styler.py`: Aplica formato corporativo OpenPyXL (paleta azul corporativo, fuentes Segoe UI, totales con fórmulas dinámicas y autoajuste de columnas).
 
 ---
 
-## 🚀 Guía de Reproducción
+## 🚀 Guía de Despliegue & Ejecución
 
+### 1. Despliegue en Microsoft Power Platform (Dataverse / SharePoint)
+* **Datasets de inicio:** Ubicados en [`data/FacturasEmitidas.xlsx`](data/FacturasEmitidas.xlsx) y [`data/AjustesPostFacturacion.xlsx`](data/AjustesPostFacturacion.xlsx).
+* En [make.powerapps.com](https://make.powerapps.com) o en SharePoint, crea las tablas importando ambos archivos.
+* Implementa la aplicación de lienzo siguiendo la guía arquitectónica en [`powerapps/APP_ARCHITECTURE.md`](powerapps/APP_ARCHITECTURE.md) y reutiliza las fórmulas optimizadas de [`powerapps/POWER_FX_FORMULAS.md`](powerapps/POWER_FX_FORMULAS.md).
+* Configura los flujos en nube en [make.powerautomate.com](https://make.powerautomate.com) utilizando los payloads y definiciones de [`powerautomate/`](powerautomate/).
+
+### 2. Motor de Automatización & Pipeline Python
 ```bash
 # 1. Clonar el repositorio
 git clone https://github.com/MartinZapanaBerrospi/telecom-ops-automation.git
@@ -99,7 +106,8 @@ cd telecom-ops-automation
 # 2. Instalar dependencias
 pip install -r requirements.txt
 
-# 3. Ejecutar simulación de automatización y generación de reporte estilizado
+# 3. Generar datasets y reporte estilizado
+python src/generate_seed_data.py
 python src/automation_engine.py
 python src/excel_report_styler.py
 ```

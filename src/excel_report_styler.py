@@ -50,8 +50,8 @@ def generar_reporte_ejecutivo_estilizado():
     # Aplicar estilos con openpyxl
     wb = openpyxl.load_workbook(excel_path)
     
-    # Paleta Claro Corporate
-    claro_red = "DA291C"
+    # Paleta Corporativa Telecom
+    header_color = "005A9E"  # Telecom Enterprise Blue
     dark_navy = "0F172A"
     light_gray = "F1F5F9"
     green_ok = "DCFCE7"
@@ -64,9 +64,9 @@ def generar_reporte_ejecutivo_estilizado():
         # Título Corporativo
         ws.merge_cells("A1:D1")
         title_cell = ws["A1"]
-        title_cell.value = f"CLARO PERÚ — REPORTE OPERACIONAL DE POST FACTURACIÓN ({sheetname.replace('_', ' ')})"
+        title_cell.value = f"TELECOM ENTERPRISE — REPORTE OPERACIONAL DE POST FACTURACIÓN ({sheetname.replace('_', ' ')})"
         title_cell.font = Font(name="Calibri", size=14, bold=True, color="FFFFFF")
-        title_cell.fill = PatternFill(start_color=claro_red, end_color=claro_red, fill_type="solid")
+        title_cell.fill = PatternFill(start_color=header_color, end_color=header_color, fill_type="solid")
         title_cell.alignment = Alignment(horizontal="center", vertical="center")
         ws.row_dimensions[1].height = 30
 

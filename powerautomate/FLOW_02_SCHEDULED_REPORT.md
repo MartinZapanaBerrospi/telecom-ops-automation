@@ -13,5 +13,5 @@ Flujo con **Disparador Recurrente (Recurrence Trigger)** programado de Lunes a V
    * Facturación Emitida del Día.
    * Tasa de Cobranza %.
    * Casos en Disputa.
-4. **Envío de Correo HTML:** Envía correo corporativo a `jefatura.postfacturacion@claro.com.pe` con el reporte adjunto y tabla resumen en HTML.
+4. **Envío de Correo HTML:** Envía correo corporativo a `jefatura.postfacturacion@telecom.com` con el reporte adjunto y tabla resumen en HTML.
 5. **Mensaje a Microsoft Teams:** Publica mensaje informativo en el canal *#Soporte-Operaciones-Facturacion*.

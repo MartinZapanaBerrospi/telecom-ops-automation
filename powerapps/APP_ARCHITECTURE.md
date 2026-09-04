@@ -43,7 +43,7 @@ Permitir a los analistas de **Soporte Operacional de Post Facturación** registr
 ## 🧩 Detalle de Componentes por Pantalla
 
 ### 1. `DashboardScreen` (Pantalla Principal)
-* **Header Corporativo:** Logo Claro / Operaciones, foto de usuario activo y selector de ciclo (`C01`, `C15`, `C28`).
+* **Header Corporativo:** Logo corporativo del operador / Operaciones, foto de usuario activo y selector de ciclo (`C01`, `C15`, `C28`).
 * **KPI Cards (Indicadores en tiempo real):**
   * *Total Solicitudes del Ciclo* (`CountRows(colAjustes)`)
   * *Monto Total en Disputa (S/)* (`Sum(colAjustes, MontoReclamado)`)
@@ -68,7 +68,7 @@ Permitir a los analistas de **Soporte Operacional de Post Facturación** registr
 ---
 
 ## 🎨 Paleta de Colores & Diseño UI (Estándar Telecom)
-* **Primario:** Claro Red (`#DA291C` / `RGBA(218, 41, 28, 1)`)
+* **Primario:** Telecom Deep Blue (`#005A9E` / `RGBA(0, 90, 158, 1)`) o Crimson Corporate (`#DA291C`)
 * **Secundario:** Deep Navy (`#0F172A`)
 * **Background:** Clean White / Slate Light (`#F8FAFC`)
 * **Success / Warning / Danger:** `#10B981` / `#F59E0B` / `#EF4444`

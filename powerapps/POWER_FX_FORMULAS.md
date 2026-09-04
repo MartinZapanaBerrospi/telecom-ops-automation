@@ -9,7 +9,7 @@
 Set(varCurrentUser, User());
 Set(
     varIsJefatura, 
-    varCurrentUser.Email in ["jefatura.postfacturacion@claro.com.pe", "supervisor.ops@claro.com.pe"]
+    varCurrentUser.Email in ["jefatura.postfacturacion@telecom.com", "supervisor.ops@telecom.com"]
 );
 
 // Cargar colección de ajustes y caché de catálogos
