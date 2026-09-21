@@ -8,3 +8,6 @@ env/
 venv/
 .DS_Store
 Thumbs.db
+
+# Salidas generadas
+data/BitacoraDecisiones.csv

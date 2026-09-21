@@ -1,130 +1,158 @@
-# ⚙️ Telecom Operations & Power Platform Automation Suite
+# Telecom Ops Automation
 
-[![Power Apps](https://img.shields.io/badge/Power_Apps-Canvas%20App%20Enterprise-742774?style=for-the-badge&logo=powerapps&logoColor=white)](https://powerapps.microsoft.com/)
-[![Power Automate](https://img.shields.io/badge/Power_Automate-Cloud%20Flows%20%26%20Approvals-0066FF?style=for-the-badge&logo=powerautomate&logoColor=white)](https://powerautomate.microsoft.com/)
-[![Microsoft Teams](https://img.shields.io/badge/MS_Teams-Adaptive%20Cards-6264A7?style=for-the-badge&logo=microsoftteams&logoColor=white)](https://teams.microsoft.com/)
-[![Python Engine](https://img.shields.io/badge/Python-Automation%20Webhook-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![Power Apps](https://img.shields.io/badge/Power%20Apps-Canvas%20App-742774?logo=powerapps&logoColor=white)](https://powerapps.microsoft.com/)
+[![Power Automate](https://img.shields.io/badge/Power%20Automate-Cloud%20Flows-0066FF?logo=powerautomate&logoColor=white)](https://powerautomate.microsoft.com/)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Tests](https://img.shields.io/badge/pytest-9%20pruebas-0A9EDC?logo=pytest&logoColor=white)](tests/test_reglas_aprobacion.py)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> Proyecto personal de **Automatización de Procesos de Negocio (BPA)** y prueba de concepto (PoC) aplicada a operaciones post-facturación en telecomunicaciones, integrando **Power Apps (Canvas App), Power Automate (Cloud Flows), Tarjetas Adaptables en Microsoft Teams y procesamiento en Python**.
+Diseño de un flujo de **aprobación de ajustes de post-facturación** en telecomunicaciones con Power Platform: una app de lienzo para el analista, un flujo de aprobación con tarjetas adaptables en Teams y un motor de reglas en Python que implementa y prueba las mismas validaciones.
 
----
-
-## 🎯 Contexto, Motivación & Planteamiento del Problema
-
-En las operaciones masivas de soporte y post-facturación en empresas de telecomunicaciones, la gestión de reclamos por facturación e incidencias comerciales (cobros no reconocidos, errores de tarificación en roaming o paquetes no imputados) suele enfrentarse a cuellos de botella: cadenas manuales de correos para autorizar notas de crédito, dispersión de planillas locales y riesgo de error por digitación manual.
-
-Como estudiante de pregrado en **Ingeniería de Sistemas (8vo Ciclo) y Bachiller en Ciencias (Matemática)** en la Universidad Nacional de Ingeniería (UNI), desarrollé este proyecto como una **Prueba de Concepto (PoC) de extremo a extremo**. El objetivo es explorar y demostrar cómo la combinación de herramientas **Low-Code empresariales (Power Platform)** y **lenguajes de programación (Python)** permite modelar, validar y optimizar un flujo de trabajo operacional de alta exigencia.
-
-### 📊 Simulación de Eficiencia Operativa (Validación de la PoC)
-
-Para evaluar el impacto de la arquitectura propuesta, se simuló un entorno operacional utilizando datasets de prueba estructurados en ciclos de corte (`C01`, `C15`, `C28`):
-
-| Dimensión Evaluada | Enfoque Manual Tradicional | Solución Diseñada (PoC) | Beneficio Observado en Pruebas |
-| :--- | :--- | :--- | :--- |
-| **Tiempo de Decisión en Ajustes** | Varios días en bandejas de correo | **Notificación interactiva en Teams** | **⚡ Decisión ágil (< 15 min en pruebas)** sin salir del entorno de colaboración |
-| **Integridad de Datos & Reglas** | Revisión manual sujeta a error | **Lógica reactiva con Power Fx** | **🛡️ 100% de consistencia:** bloquea montos que excedan la factura original |
-| **Trazabilidad & Auditoría** | Planillas locales no centralizadas | **Base de datos con bitácora** | **📋 Registro estructurado de cada acción**, usuario, fecha y dictamen |
-| **Consolidación de Reportería** | Formateo manual diario de tablas | **Pipeline Python (OpenPyXL)** | **⏱️ Generación en segundos** con formato ejecutivo listo para distribución |
-
-### 🛠️ Competencias Técnicas Demostradas en el Proyecto
-
-* **Power Apps & Power Fx:** Modelamiento de estado con variables globales y de contexto (`Set`, `UpdateContext`), colecciones en memoria (`ClearCollect`), funciones declarativas de búsqueda (`LookUp`), operaciones transaccionales con `Patch()` y control reactivo de propiedades de UI.
-* **Orquestación en Power Automate:** Flujos en nube instantáneos (V2) y programados (Recurrence), diseño de **Tarjetas Adaptables (Adaptive Cards)** en formato JSON para Microsoft Teams y lógica condicional de aprobación.
-* **Procesamiento de Datos con Python:** Análisis y transformación de datos con `pandas`, generación automatizada de reportes corporativos en Excel con `openpyxl` (estilos, paletas corporativas, fórmulas y anchos automáticos).
-* **Ingeniería de Procesos:** Modelamiento de flujos de negocio (BPMN/Mermaid), control de excepciones y diseño de reglas de negocio para jerarquías operativas.
+> **Alcance del proyecto.** Es un proyecto personal de aprendizaje. Los datos son **ficticios** (empresas, personas y documentos inventados). La app de Power Apps y los flujos de Power Automate están **especificados y versionados como definiciones JSON y guías de implementación**, no desplegados en un tenant productivo; lo que sí se ejecuta en este repositorio es el motor de reglas en Python y su suite de pruebas. Ver [Qué está implementado](#qué-está-implementado-y-qué-es-especificación).
 
 ---
 
-## 🏗️ Arquitectura de la Solución
+## El problema que modela
+
+Cuando un cliente reclama un cobro (sobrefacturación de datos, roaming no reconocido, descuento no aplicado, cargo duplicado), el analista de post-facturación necesita registrar el ajuste y conseguir una autorización. Hacerlo por cadenas de correo tiene tres problemas: la decisión se pierde en bandejas, no queda bitácora de quién autorizó qué, y nada impide aprobar un ajuste mayor que la propia factura.
+
+Este proyecto modela ese proceso como un flujo con reglas explícitas y trazabilidad.
+
+---
+
+## Las reglas de negocio
+
+Son el corazón del proyecto. Están documentadas en [`docs/PROCESS_BLUEPRINT.md`](docs/PROCESS_BLUEPRINT.md), validadas en la app con Power Fx, ejecutadas por el flujo en la nube e implementadas y probadas en [`src/automation_engine.py`](src/automation_engine.py):
+
+| Regla | Condición | Resultado |
+|---|---|---|
+| **R1** | El ajuste supera el monto de la factura original | Rechazo automático |
+| **R2** | Monto ≤ S/ 50.00 | Aprobación automática |
+| **R3** | S/ 50.00 < monto ≤ S/ 500.00 | Aprobación de jefatura por tarjeta adaptable en Teams |
+| **R4** | Monto > S/ 500.00 | Escala a gerencia |
+| **R5** | El recibo no existe en el maestro de facturas | Rechazo automático |
+
+Cada evaluación queda registrada en `data/BitacoraDecisiones.csv` con el dictamen, el aprobador responsable y el motivo: la bitácora que el proceso por correo no tenía.
+
+---
+
+## Arquitectura
 
 ```mermaid
 flowchart TD
-    subgraph Frontend ["1. Frontend Operacional (Power Apps)"]
-        A1[Analista de Soporte Operacional] --> A2[Canvas App: Portal de Ajustes Telco]
-        A2 --> A3{Validación Power Fx: Tope & Antigüedad}
-    end
-
-    subgraph Orquestacion ["2. Capa de Orquestación (Power Automate)"]
-        A3 -->|Monto <= S/ 50| B1[Auto-Aprobación Inmediata]
-        A3 -->|Monto > S/ 50| B2[Cloud Flow: Sistema de Aprobación Jerárquica]
-        B2 --> B3[Adaptive Card interactiva en MS Teams a Jefatura]
-        B3 -->|Aprobado / Rechazado| B4[Actualización de Estado & Auditoría]
-    end
-
-    subgraph Backend ["3. Integración & Reporte Ejecutivo (Python)"]
-        B4 --> C1[Webhook / Automation Engine Python]
-        C1 --> C2[Generación de Reporte Excel con Estilos Corporativos]
-        C2 --> C3[Cloud Flow 02: Envío Automático 08:00 AM a Gerencia]
-    end
+    A1[Analista de post-facturación] --> A2["Canvas App<br/>portal de ajustes"]
+    A2 --> A3{"Validación Power Fx<br/>tope y factura origen"}
+    A3 -->|"Monto ≤ S/ 50"| B1[Aprobación automática]
+    A3 -->|"Monto > S/ 50"| B2["Cloud Flow<br/>aprobación jerárquica"]
+    B2 --> B3["Tarjeta adaptable<br/>en Microsoft Teams"]
+    B3 -->|Aprobado / Rechazado| B4[Actualización de estado y bitácora]
+    B1 --> B4
+    B4 --> C1["Motor de reglas en Python<br/>evaluación y auditoría"]
+    C1 --> C2["Reporte Excel<br/>con formato ejecutivo"]
 ```
 
 ---
 
-## 📱 Componentes de la Suite
+## Qué está implementado y qué es especificación
 
-### 1. Canvas App en Power Apps (`powerapps/`)
-* **Búsqueda Inteligente:** Búsqueda en tiempo real por número de documento (DNI/RUC) o número de recibo.
-* **Control de Reglas de Negocio con Power Fx:**
-  ```powerfx
-  // Validación de tope máximo de ajuste según perfil del analista
-  If(
-      Value(txtMontoAjuste.Text) > 500 && User().Email <> "jefatura.postfacturacion@telecom.com",
-      Notify("El monto supera el límite operativo para analistas. Se enviará a aprobación de jefatura.", NotificationType.Warning),
-      Patch(
-          'Ajustes Facturación',
-          Defaults('Ajustes Facturación'),
-          {
-              NumeroRecibo: txtNumeroRecibo.Text,
-              MontoAjuste: Value(txtMontoAjuste.Text),
-              Motivo: ddMotivo.Selected.Value,
-              EstadoAprobacion: If(Value(txtMontoAjuste.Text) <= 50, "APROBADO_AUTO", "PENDIENTE_JEFATURA"),
-              FechaSolicitud: Now(),
-              AnalistaSolicitante: User().FullName
-          }
-      )
-  );
-  ```
-
-### 2. Flujos en la Nube de Power Automate (`powerautomate/`)
-* **Flow 01 — Sistema de Aprobaciones con Tarjetas Adaptables:** Notifica a la jefatura en Microsoft Teams con botones interactivos de `Aprobar` y `Rechazar` con comentarios obligatorios.
-* **Flow 02 — Distribución Programada de Reporte Diario:** Se ejecuta de forma desatendida a las **08:00 AM (Lunes a Viernes)**, consolida las métricas del día anterior y envía el reporte a los stakeholders.
-* **Flow 03 — Trigger de Alerta ante Anomalías:** Se activa cuando se detectan más de 5 reclamos por la misma antena/nodo en menos de 1 hora.
-
-### 3. Motor de Automatización & Estilizador en Python (`src/`)
-* `src/automation_engine.py`: Simula el procesamiento de eventos webhook y confirmación de notas de crédito en el ERP.
-* `src/excel_report_styler.py`: Aplica formato corporativo OpenPyXL (paleta azul corporativo, fuentes Segoe UI, totales con fórmulas dinámicas y autoajuste de columnas).
+| Componente | Estado | Dónde |
+|---|---|---|
+| Motor de reglas de aprobación | **Código ejecutable** con 9 pruebas | [`src/automation_engine.py`](src/automation_engine.py), [`tests/`](tests/) |
+| Generador de datos de prueba | **Código ejecutable** | [`src/generate_seed_data.py`](src/generate_seed_data.py) |
+| Reporte Excel con formato | **Código ejecutable** | [`src/excel_report_styler.py`](src/excel_report_styler.py) |
+| Canvas App (pantallas, estado, fórmulas) | Especificación y fórmulas Power Fx | [`powerapps/`](powerapps/) |
+| Flujos de Power Automate (3) | Definiciones JSON y guías de implementación | [`powerautomate/`](powerautomate/) |
+| Tarjetas adaptables para Teams | Payload JSON | [`powerautomate/flows_definitions/`](powerautomate/flows_definitions/) |
 
 ---
 
-## 🚀 Guía de Despliegue & Ejecución
+## Componentes
 
-### 1. Despliegue en Microsoft Power Platform (Dataverse / SharePoint)
-* **Datasets de inicio:** Ubicados en [`data/FacturasEmitidas.xlsx`](data/FacturasEmitidas.xlsx) y [`data/AjustesPostFacturacion.xlsx`](data/AjustesPostFacturacion.xlsx).
-* En [make.powerapps.com](https://make.powerapps.com) o en SharePoint, crea las tablas importando ambos archivos.
-* Implementa la aplicación de lienzo siguiendo la guía arquitectónica en [`powerapps/APP_ARCHITECTURE.md`](powerapps/APP_ARCHITECTURE.md) y reutiliza las fórmulas optimizadas de [`powerapps/POWER_FX_FORMULAS.md`](powerapps/POWER_FX_FORMULAS.md).
-* Configura los flujos en nube en [make.powerautomate.com](https://make.powerautomate.com) utilizando los payloads y definiciones de [`powerautomate/`](powerautomate/).
+### Canvas App en Power Apps (`powerapps/`)
 
-### 2. Motor de Automatización & Pipeline Python
+Búsqueda por documento (DNI/RUC) o número de recibo, y validación reactiva del tope antes de registrar el ajuste:
+
+```powerfx
+If(
+    Value(txtMontoAjuste.Text) > 500 && User().Email <> "jefatura.postfacturacion@telecom.com",
+    Notify("El monto supera el límite operativo para analistas. Se enviará a aprobación de jefatura.", NotificationType.Warning),
+    Patch(
+        'Ajustes Facturación',
+        Defaults('Ajustes Facturación'),
+        {
+            NumeroRecibo: txtNumeroRecibo.Text,
+            MontoAjuste: Value(txtMontoAjuste.Text),
+            Motivo: ddMotivo.Selected.Value,
+            EstadoAprobacion: If(Value(txtMontoAjuste.Text) <= 50, "APROBADO_AUTO", "PENDIENTE_JEFATURA"),
+            FechaSolicitud: Now(),
+            AnalistaSolicitante: User().FullName
+        }
+    )
+);
+```
+
+La arquitectura de pantallas y el modelo de estado están en [`powerapps/APP_ARCHITECTURE.md`](powerapps/APP_ARCHITECTURE.md); el resto de fórmulas, en [`powerapps/POWER_FX_FORMULAS.md`](powerapps/POWER_FX_FORMULAS.md).
+
+### Flujos de Power Automate (`powerautomate/`)
+
+| Flujo | Disparador | Qué hace |
+|---|---|---|
+| **01 — Aprobaciones** | Solicitud registrada en la app | Envía una tarjeta adaptable a la jefatura en Teams con botones de aprobar o rechazar y comentario obligatorio |
+| **02 — Reporte programado** | Recurrencia diaria | Consolida las métricas del día anterior y distribuye el reporte a los responsables |
+| **03 — Alerta por anomalías** | Umbral de reclamos por nodo | Notifica cuando se concentran varios reclamos del mismo nodo en poco tiempo |
+
+### Motor de reglas y reportes en Python (`src/`)
+
+- `automation_engine.py`: evalúa la bandeja de solicitudes contra las reglas R1–R5 y escribe la bitácora de decisiones.
+- `excel_report_styler.py`: genera el reporte para jefatura con formato corporativo (openpyxl).
+- `generate_seed_data.py`: crea los datasets ficticios de facturas y ajustes.
+
+---
+
+## Cómo ejecutarlo
+
+Requisitos: Python 3.10 o superior.
+
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/MartinZapanaBerrospi/telecom-ops-automation.git
 cd telecom-ops-automation
-
-# 2. Instalar dependencias
 pip install -r requirements.txt
-
-# 3. Generar datasets y reporte estilizado
-python src/generate_seed_data.py
-python src/automation_engine.py
-python src/excel_report_styler.py
 ```
+
+```bash
+python src/generate_seed_data.py     # 1. genera los datasets ficticios
+python src/automation_engine.py      # 2. evalúa las solicitudes y escribe la bitácora
+python src/excel_report_styler.py    # 3. genera el reporte Excel con formato
+pytest tests/ -q                     # 4. valida las reglas de aprobación
+```
+
+**Para llevarlo a Power Platform:** importa los datasets de `data/` como tablas en Dataverse o SharePoint, construye la app siguiendo `powerapps/APP_ARCHITECTURE.md` y crea los flujos en [make.powerautomate.com](https://make.powerautomate.com) con las definiciones de `powerautomate/`.
 
 ---
 
-## 👨‍💻 Autor
+## Criterios de diseño
 
-**Martín Zapana Berrospi**
-* 🎓 Estudiante de Ingeniería de Sistemas (8vo Ciclo) & Bachiller en Ciencias (Matemática) — **Universidad Nacional de Ingeniería (UNI)**
-* 💼 LinkedIn: [martin-eduardo-zapana-berrospi](https://www.linkedin.com/in/martin-eduardo-zapana-berrospi/)
-* 🌐 Portafolio: [martinzapana.com](https://martinzapana.com)
+Qué busca resolver cada decisión del flujo, frente a una cadena de correos:
+
+| Criterio | Cómo se aborda |
+|---|---|
+| Que la decisión no se pierda | La aprobación ocurre dentro de Teams, donde la jefatura ya trabaja |
+| Que no se aprueben montos imposibles | El tope y el monto de la factura original se validan antes de registrar la solicitud |
+| Que quede rastro | Cada dictamen se escribe en una bitácora con usuario, fecha y motivo |
+| Que las reglas sean verificables | Están implementadas en Python y cubiertas por pruebas, no solo descritas en un documento |
+
+---
+
+## Limitaciones conocidas
+
+- **No está desplegado en un tenant.** La app y los flujos son especificaciones y definiciones; no hay ambiente productivo ni licencias asociadas.
+- **Los datos son ficticios.** Empresas, personas, documentos y montos fueron inventados para el ejercicio.
+- **El motor de Python no conecta con Power Platform.** Reproduce las reglas de forma local para poder probarlas; no consume las APIs de Dataverse.
+
+---
+
+## Autor
+
+**Martín Zapana Berrospi** — Estudiante de Ingeniería de Sistemas (9no ciclo) y Bachiller en Ciencias con mención en Matemática, Universidad Nacional de Ingeniería (UNI).
+
+[Portafolio](https://www.martinzapana.com) · [LinkedIn](https://www.linkedin.com/in/martin-eduardo-zapana-berrospi/) · [GitHub](https://github.com/MartinZapanaBerrospi)
