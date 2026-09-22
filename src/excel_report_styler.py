@@ -50,10 +50,34 @@ GRIS_BORDE = "CBD5E1"
 
 ESTADO_OK = "CUMPLIDO"
 ESTADO_ALERTA = "EN OBSERVACION"
+SIN_META = "—"  # raya, no guion: un guion inicial Excel lo lee como formula
+
+# Excel evalua como formula toda celda de texto que empiece con uno de estos
+# caracteres. Ver sanear_para_excel().
+PREFIJOS_DE_FORMULA = ("=", "+", "-", "@", "\t", "\r")
 
 
 def _soles(monto: float) -> str:
     return f"S/ {monto:,.2f}"
+
+
+def sanear_para_excel(df: pd.DataFrame) -> pd.DataFrame:
+    """Neutraliza el texto que Excel interpretaria como formula al abrir el archivo.
+
+    Hoy ninguna columna de texto libre llega al reporte, pero el destino de este
+    Excel es un adjunto de correo a la jefatura (flujo 02) y sus datos vendrian
+    de Dataverse, donde un analista escribe la justificacion a mano. Una
+    justificacion que empiece con "=" se ejecutaria al abrir el adjunto.
+
+    El apostrofo inicial le indica a Excel que trate la celda como texto; no se
+    muestra al abrir el archivo.
+    """
+    def _neutralizar(valor: object) -> object:
+        if isinstance(valor, str) and valor[:1] in PREFIJOS_DE_FORMULA:
+            return "'" + valor
+        return valor
+
+    return df.apply(lambda columna: columna.map(_neutralizar))
 
 
 def calcular_kpis(facturas: pd.DataFrame, ajustes: pd.DataFrame) -> pd.DataFrame:
@@ -67,11 +91,11 @@ def calcular_kpis(facturas: pd.DataFrame, ajustes: pd.DataFrame) -> pd.DataFrame
     tasa_resolucion = (resueltas / len(ajustes) * 100) if len(ajustes) else 0.0
 
     filas = [
-        ("Facturacion total emitida (S/)", "-", _soles(facturado), ESTADO_OK),
-        ("Recibos emitidos en el periodo", "-", f"{len(facturas):,}", ESTADO_OK),
-        ("Solicitudes de ajuste registradas", "-", f"{len(ajustes):,}", ESTADO_OK),
-        ("Monto reclamado por clientes (S/)", "-", _soles(reclamado), ESTADO_OK),
-        ("Monto reconocido y aprobado (S/)", "-", _soles(reconocido), ESTADO_OK),
+        ("Facturacion total emitida (S/)", SIN_META, _soles(facturado), ESTADO_OK),
+        ("Recibos emitidos en el periodo", SIN_META, f"{len(facturas):,}", ESTADO_OK),
+        ("Solicitudes de ajuste registradas", SIN_META, f"{len(ajustes):,}", ESTADO_OK),
+        ("Monto reclamado por clientes (S/)", SIN_META, _soles(reclamado), ESTADO_OK),
+        ("Monto reconocido y aprobado (S/)", SIN_META, _soles(reconocido), ESTADO_OK),
         (
             "Tasa de disputa sobre facturacion (%)",
             f"< {META_TASA_DISPUTA_PCT:.1f} %",
@@ -84,7 +108,7 @@ def calcular_kpis(facturas: pd.DataFrame, ajustes: pd.DataFrame) -> pd.DataFrame
             str(pendientes),
             ESTADO_OK if pendientes <= META_PENDIENTES else ESTADO_ALERTA,
         ),
-        ("Tasa de resolucion de solicitudes (%)", "-", f"{tasa_resolucion:.1f} %", ESTADO_OK),
+        ("Tasa de resolucion de solicitudes (%)", SIN_META, f"{tasa_resolucion:.1f} %", ESTADO_OK),
     ]
     return pd.DataFrame(
         filas, columns=["Indicador Operacional", "Meta", "Resultado Actual", "Estado"]
@@ -225,7 +249,9 @@ def generar_reporte() -> Path:
 
     with pd.ExcelWriter(SALIDA, engine="openpyxl") as writer:
         for nombre, df in hojas.items():
-            df.to_excel(writer, sheet_name=nombre, index=False, startrow=3)
+            sanear_para_excel(df).to_excel(
+                writer, sheet_name=nombre, index=False, startrow=3
+            )
 
     aplicar_formato(SALIDA)
 
