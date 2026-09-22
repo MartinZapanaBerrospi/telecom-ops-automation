@@ -132,6 +132,13 @@ telecom-ops-automation/
 | Tarjeta adaptable para Teams | Payload JSON | [`powerautomate/flow-01-approvals.md`](powerautomate/flow-01-approvals.md) |
 | Capturas de la app desplegada | **Pendiente** — requiere un tenant | [guía de despliegue](docs/03-deployment-guide.md) |
 
+> **¿Y cómo se ve esto corriendo de verdad?** Estos `.md` y `.json` son planos: Power
+> Platform no los importa. Lo que sí se importa es una *solución* `.zip` exportada desde
+> un entorno, y con la Power Platform CLI esa solución se descomprime en archivos
+> `.fx.yaml` con las fórmulas de cada pantalla, legibles en GitHub. El camino completo,
+> con un entorno gratuito, está en la
+> [Parte C de la guía de despliegue](docs/03-deployment-guide.md#parte-c--de-especificación-a-algo-que-corre-e-importa).
+
 ---
 
 ## Componentes

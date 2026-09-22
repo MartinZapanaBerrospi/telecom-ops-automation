@@ -22,7 +22,10 @@ a más esfuerzo:
 | **5. Capturas de la app real** | Prueba de que se construyó | Pendiente — requiere la Parte B |
 
 Las capas 1 a 4 ya están en el repositorio y son lo que hace legible el proyecto sin
-tenant. La capa 5 es la única que exige desplegar, y la Parte B explica cómo hacerlo gratis.
+tenant. La capa 5 es la única que exige desplegar, y la Parte B explica cómo hacerlo
+gratis. Si además quieres que el repositorio quede **importable y ejecutable** por
+cualquiera, la [Parte C](#parte-c--de-especificación-a-algo-que-corre-e-importa) explica
+cómo llegar ahí.
 
 > **Recomendación.** Si el objetivo es un portafolio, lo que más pesa es la capa 5: dos o
 > tres capturas de la app funcionando, más un GIF corto de la tarjeta adaptable llegando a
@@ -122,3 +125,93 @@ Cosas que esta guía no resuelve y que aparecerán al construirlo:
   de ejecución.
 - **Los topes están fijos en el código.** En producción deberían venir de una tabla de
   parámetros editable por el negocio, no de constantes.
+
+---
+
+## Parte C — De especificación a algo que corre e importa
+
+La pregunta natural al ver este repositorio es: *todo son `.md` y `.json`, ¿cómo hago que
+esto actúe dentro de Power Apps o Power Automate?*
+
+La respuesta honesta primero: **estos archivos no se importan ni se ejecutan.** No existe un
+botón que convierta un Markdown o un extracto de definición en una app o un flujo vivo.
+Son planos, no la casa. Power Platform sólo entiende un formato de intercambio: la
+**solución exportada** (`.zip`), y ese `.zip` únicamente existe después de construir la
+solución dentro de un entorno.
+
+Lo que sí se puede hacer es recorrer el camino una vez y dejar el repositorio del otro
+lado, donde cualquiera lo importa en dos clics.
+
+### C.1 · Conseguir un entorno (gratis)
+
+El [Power Apps Developer Plan](https://powerapps.microsoft.com/developerplan/) da un
+entorno personal con Dataverse y conectores premium, sin costo, para uso no productivo.
+Es suficiente para todo lo de este proyecto: la app, los tres flujos y la tarjeta adaptable
+en Teams.
+
+> Microsoft cambia los términos de sus planes con cierta frecuencia. Confirma las
+> condiciones vigentes antes de apoyarte en esto para algo importante.
+
+### C.2 · Empaquetar todo en una *solución*
+
+Éste es el paso que la mayoría se salta y es el que lo cambia todo. En lugar de crear la
+app y los flujos sueltos, se crean **dentro de una solución**:
+
+1. En [make.powerapps.com](https://make.powerapps.com) → **Soluciones** → **Nueva solución**.
+2. Editor: el tuyo. Nombre: `TelecomPostBillingAdjustment`.
+3. Añade a la solución las tablas, la app y los tres flujos, en vez de crearlos fuera.
+
+Una solución es la unidad que Power Platform sabe exportar e importar. Todo lo que quede
+fuera de ella no viaja.
+
+### C.3 · Exportar e incorporar el `.zip` al repositorio
+
+**Soluciones** → seleccionar la tuya → **Exportar** → *No administrada* (permite seguir
+editándola en destino).
+
+El `.zip` resultante va al repositorio, por ejemplo en `solution/`. A partir de ese
+momento el proyecto deja de ser una especificación: cualquiera con un entorno la importa
+desde **Soluciones → Importar** y ve la app corriendo con sus datos y sus flujos.
+
+### C.4 · Hacer que la app sea legible en GitHub
+
+Un `.zip` se importa, pero sigue sin poder leerse en GitHub. Para eso está la
+[Power Platform CLI](https://learn.microsoft.com/power-platform/developer/cli/introduction)
+(`pac`), que descomprime la solución en archivos de texto:
+
+```bash
+pac solution unpack --zipfile solution/TelecomPostBillingAdjustment.zip --folder solution/src
+pac canvas unpack --msapp solution/src/CanvasApps/*.msapp --sources solution/src/CanvasApps/src
+```
+
+El segundo comando es el importante: convierte el `.msapp` en archivos `.fx.yaml`, **uno
+por pantalla, con todas las fórmulas Power Fx en texto plano**. Eso sí se lee en GitHub, se
+compara entre commits y se revisa en un pull request. Es la forma estándar de versionar una
+Canvas App, y cierra el hueco que hoy tapan las maquetas SVG.
+
+El camino de vuelta existe (`pac canvas pack`, `pac solution pack`), así que el `.zip` se
+puede reconstruir desde el código versionado.
+
+### C.5 · Automatizarlo (opcional)
+
+Microsoft publica [acciones oficiales de GitHub](https://github.com/microsoft/powerplatform-actions)
+para exportar, desempaquetar e importar soluciones desde un workflow. Sirven para que cada
+cambio hecho en el entorno se refleje solo en el repositorio.
+
+Es el paso más avanzado y el menos necesario para un proyecto personal: tiene sentido
+cuando varias personas editan la misma solución.
+
+---
+
+## Resumen: qué se gana en cada paso
+
+| Estado | Qué puede hacer quien llega al repositorio | Esfuerzo |
+|---|---|---|
+| **Hoy** | Entender el diseño, las reglas y el modelo; ejecutar el motor de Python | — |
+| Tras **B.1–B.4** | Lo anterior, y ver la app y la tarjeta funcionando en tu pantalla | Unas horas |
+| Tras **B.5** | Ver capturas y un GIF de todo funcionando, sin construir nada | +30 min |
+| Tras **C.2–C.3** | **Importar la solución y usarla** en su propio entorno | +15 min |
+| Tras **C.4** | Leer en GitHub las fórmulas reales de cada pantalla | +15 min |
+
+El salto que más cambia la percepción del proyecto es **B.5**: las capturas. El que más
+cambia su utilidad real es **C.3**: el `.zip` importable.

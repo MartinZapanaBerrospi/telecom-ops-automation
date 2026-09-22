@@ -6,7 +6,7 @@ Tres documentos, en orden de lectura. Si sólo vas a leer uno, lee el primero.
 |---|---|---|
 | 01 | [Proceso y reglas de negocio](01-business-rules.md) | Qué problema se resuelve, cuáles son las reglas R1–R5 y en qué estado queda cada solicitud. **Es la fuente de verdad del proyecto.** |
 | 02 | [Modelo de datos](02-data-model.md) | Qué tablas hay, qué columnas tienen y cómo se relacionan |
-| 03 | [Guía de despliegue](03-deployment-guide.md) | Cómo construirlo en un tenant de Power Platform, y cómo mostrarlo sin construirlo |
+| 03 | [Guía de despliegue](03-deployment-guide.md) | Cómo mostrarlo sin desplegar nada, cómo construirlo en un tenant gratuito y cómo dejar el repositorio importable (`.zip` de solución y fórmulas legibles en GitHub) |
 
 ## `assets/`
 
