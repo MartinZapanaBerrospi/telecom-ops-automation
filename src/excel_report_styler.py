@@ -1,126 +1,243 @@
 # -*- coding: utf-8 -*-
+"""Reporte operacional de post-facturación con formato corporativo.
+
+Consolida los datos del repositorio en el Excel que el flujo 02 de Power Automate
+distribuye cada mañana a la jefatura (ver powerautomate/flow-02-scheduled-report.md).
+
+Las cifras se calculan a partir de los datos, no están escritas a mano: si cambian
+los datasets, cambia el reporte.
+
+Entradas:
+    data/FacturasEmitidas.xlsx
+    data/AjustesPostFacturacion.xlsx
+    data/BitacoraDecisiones.csv      (opcional; la produce automation_engine.py)
+
+Salida:
+    data/Reporte_Gerencial_Facturacion.xlsx con tres hojas:
+      - Resumen_KPIs      indicadores del periodo contra su meta
+      - Detalle_Ciclos    apertura por ciclo de facturación
+      - Bitacora          dictamen de cada solicitud, si la bitácora existe
+
+Uso:
+    python src/excel_report_styler.py
 """
-Generador y Estilizador Corporativo de Reportes Excel para Jefatura
-Autor: Martín Zapana Berrospi
-"""
-import pandas as pd
-import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-from openpyxl.utils import get_column_letter
+from __future__ import annotations
+
+import sys
 from pathlib import Path
 
+import openpyxl
+import pandas as pd
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from openpyxl.utils import get_column_letter
+
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
-DATA_DIR.mkdir(exist_ok=True)
+SALIDA = DATA_DIR / "Reporte_Gerencial_Facturacion.xlsx"
 
-def generar_reporte_ejecutivo_estilizado():
-    excel_path = DATA_DIR / "Reporte_Gerencial_Facturacion_Estilizado.xlsx"
-    print(f"[*] Generando reporte gerencial estilizado en: {excel_path}")
+# Metas operacionales del área. En un sistema real vendrían de una tabla de
+# parámetros editable por el negocio, no de constantes en el código.
+META_TASA_DISPUTA_PCT = 2.0   # el monto reclamado no debería superar el 2% de lo facturado
+META_PENDIENTES = 3           # solicitudes esperando decisión humana al cierre del día
 
-    # Datos de resumen
-    data_kpi = {
-        "Indicador Operacional": [
-            "Facturación Total Emitida (S/)",
-            "Recaudación Efectiva Cobrada (S/)",
-            "Cartera en Mora / Vencida (S/)",
-            "Notas de Crédito y Ajustes (S/)",
-            "Tasa de Error / Disputas (%)",
-            "Efectividad de Cobranza (%)",
-            "Total Recibos Auditados"
-        ],
-        "Meta / Target": ["S/ 1,200,000", "S/ 1,000,000", "< S/ 150,000", "< S/ 25,000", "< 2.0 %", "> 85.0 %", "20,000"],
-        "Resultado Actual": ["S/ 1,348,920", "S/ 1,146,582", "S/ 162,338", "S/ 18,450", "1.37 %", "85.00 %", "20,429"],
-        "Estado": ["CUMPLIDO", "CUMPLIDO", "EN OBSERVACION", "CUMPLIDO", "CUMPLIDO", "CUMPLIDO", "CUMPLIDO"]
-    }
-    df_kpi = pd.DataFrame(data_kpi)
+# Paleta corporativa, la misma de la Canvas App (powerapps/app-architecture.md).
+AZUL_CORPORATIVO = "005A9E"
+AZUL_PROFUNDO = "0F172A"
+VERDE_OK = "DCFCE7"
+VERDE_TEXTO = "166534"
+AMBAR_ALERTA = "FEF3C7"
+AMBAR_TEXTO = "92400E"
+GRIS_BORDE = "CBD5E1"
 
-    # Detalle de ciclos
-    data_ciclos = {
-        "Ciclo": ["C01 (Corte 01)", "C15 (Corte 15)", "C28 (Corte 28)"],
-        "Recibos Emitidos": [6810, 6805, 6814],
-        "Monto Facturado (S/)": [448200.0, 451320.0, 449400.0],
-        "Ajustes Aprobados (S/)": [5820.0, 6410.0, 6220.0],
-        "Cobranza (%)": [86.2, 84.8, 85.1]
-    }
-    df_ciclos = pd.DataFrame(data_ciclos)
+ESTADO_OK = "CUMPLIDO"
+ESTADO_ALERTA = "EN OBSERVACION"
 
-    with pd.ExcelWriter(excel_path, engine="openpyxl") as writer:
-        df_kpi.to_excel(writer, sheet_name="Resumen_KPIs", index=False, startrow=3)
-        df_ciclos.to_excel(writer, sheet_name="Detalle_Ciclos", index=False, startrow=3)
 
-    # Aplicar estilos con openpyxl
-    wb = openpyxl.load_workbook(excel_path)
-    
-    # Paleta Corporativa Telecom
-    header_color = "005A9E"  # Telecom Enterprise Blue
-    dark_navy = "0F172A"
-    light_gray = "F1F5F9"
-    green_ok = "DCFCE7"
-    yellow_warn = "FEF3C7"
+def _soles(monto: float) -> str:
+    return f"S/ {monto:,.2f}"
 
-    for sheetname in wb.sheetnames:
-        ws = wb[sheetname]
-        ws.views.sheetView[0].showGridLines = True
-        
-        # Título Corporativo
-        ws.merge_cells("A1:D1")
-        title_cell = ws["A1"]
-        title_cell.value = f"TELECOM ENTERPRISE — REPORTE OPERACIONAL DE POST FACTURACIÓN ({sheetname.replace('_', ' ')})"
-        title_cell.font = Font(name="Calibri", size=14, bold=True, color="FFFFFF")
-        title_cell.fill = PatternFill(start_color=header_color, end_color=header_color, fill_type="solid")
-        title_cell.alignment = Alignment(horizontal="center", vertical="center")
+
+def calcular_kpis(facturas: pd.DataFrame, ajustes: pd.DataFrame) -> pd.DataFrame:
+    """Indicadores del periodo, cada uno contra su meta."""
+    facturado = float(facturas["MontoTotal"].sum())
+    reclamado = float(ajustes["MontoReclamado"].sum())
+    reconocido = float(ajustes["MontoReconocido"].sum())
+    tasa_disputa = (reclamado / facturado * 100) if facturado else 0.0
+    pendientes = int(ajustes["EstadoReclamo"].str.startswith("PENDIENTE").sum())
+    resueltas = len(ajustes) - pendientes
+    tasa_resolucion = (resueltas / len(ajustes) * 100) if len(ajustes) else 0.0
+
+    filas = [
+        ("Facturacion total emitida (S/)", "-", _soles(facturado), ESTADO_OK),
+        ("Recibos emitidos en el periodo", "-", f"{len(facturas):,}", ESTADO_OK),
+        ("Solicitudes de ajuste registradas", "-", f"{len(ajustes):,}", ESTADO_OK),
+        ("Monto reclamado por clientes (S/)", "-", _soles(reclamado), ESTADO_OK),
+        ("Monto reconocido y aprobado (S/)", "-", _soles(reconocido), ESTADO_OK),
+        (
+            "Tasa de disputa sobre facturacion (%)",
+            f"< {META_TASA_DISPUTA_PCT:.1f} %",
+            f"{tasa_disputa:.2f} %",
+            ESTADO_OK if tasa_disputa < META_TASA_DISPUTA_PCT else ESTADO_ALERTA,
+        ),
+        (
+            "Solicitudes pendientes de decision",
+            f"<= {META_PENDIENTES}",
+            str(pendientes),
+            ESTADO_OK if pendientes <= META_PENDIENTES else ESTADO_ALERTA,
+        ),
+        ("Tasa de resolucion de solicitudes (%)", "-", f"{tasa_resolucion:.1f} %", ESTADO_OK),
+    ]
+    return pd.DataFrame(
+        filas, columns=["Indicador Operacional", "Meta", "Resultado Actual", "Estado"]
+    )
+
+
+def calcular_detalle_ciclos(facturas: pd.DataFrame, ajustes: pd.DataFrame) -> pd.DataFrame:
+    """Apertura por ciclo de facturación (C01, C15, C28)."""
+    ciclo_por_recibo = dict(zip(facturas["NumeroRecibo"], facturas["Ciclo"]))
+    ajustes = ajustes.assign(Ciclo=ajustes["NumeroRecibo"].map(ciclo_por_recibo))
+
+    por_ciclo = facturas.groupby("Ciclo").agg(
+        recibos=("IdFactura", "count"), facturado=("MontoTotal", "sum")
+    )
+    ajustes_por_ciclo = ajustes.groupby("Ciclo").agg(
+        solicitudes=("IdAjuste", "count"), reclamado=("MontoReclamado", "sum")
+    )
+    detalle = por_ciclo.join(ajustes_por_ciclo).fillna(0).reset_index()
+
+    detalle["Recibos Emitidos"] = detalle["recibos"].astype(int)
+    detalle["Solicitudes"] = detalle["solicitudes"].astype(int)
+    detalle["Monto Facturado (S/)"] = detalle["facturado"].map(_soles)
+    detalle["Monto Reclamado (S/)"] = detalle["reclamado"].map(_soles)
+    detalle["Tasa de Disputa (%)"] = (
+        detalle["reclamado"] / detalle["facturado"] * 100
+    ).map(lambda valor: f"{valor:.2f} %")
+
+    return detalle[
+        [
+            "Ciclo",
+            "Recibos Emitidos",
+            "Monto Facturado (S/)",
+            "Solicitudes",
+            "Monto Reclamado (S/)",
+            "Tasa de Disputa (%)",
+        ]
+    ]
+
+
+def cargar_bitacora() -> pd.DataFrame | None:
+    """Lee la bitácora de decisiones si automation_engine.py ya se ejecutó."""
+    ruta = DATA_DIR / "BitacoraDecisiones.csv"
+    if not ruta.exists():
+        return None
+    return pd.read_csv(ruta).rename(
+        columns={
+            "id_ajuste": "ID Ajuste",
+            "numero_recibo": "Recibo",
+            "monto_solicitado": "Monto (S/)",
+            "estado": "Dictamen",
+            "aprobador": "Aprobador",
+            "motivo": "Regla Aplicada",
+            "fecha_evaluacion": "Evaluado",
+        }
+    )
+
+
+def aplicar_formato(ruta: Path) -> None:
+    """Formato corporativo: título, encabezados, bordes y semáforo de estado."""
+    wb = openpyxl.load_workbook(ruta)
+    linea = Side(style="thin", color=GRIS_BORDE)
+    borde = Border(left=linea, right=linea, top=linea, bottom=linea)
+
+    for nombre in wb.sheetnames:
+        ws = wb[nombre]
+        ultima_col = get_column_letter(ws.max_column)
+
+        ws.merge_cells(f"A1:{ultima_col}1")
+        titulo = ws["A1"]
+        titulo.value = (
+            "TELECOM - REPORTE OPERACIONAL DE POST FACTURACION "
+            f"({nombre.replace('_', ' ')})"
+        )
+        titulo.font = Font(name="Calibri", size=14, bold=True, color="FFFFFF")
+        titulo.fill = PatternFill("solid", start_color=AZUL_CORPORATIVO)
+        titulo.alignment = Alignment(horizontal="center", vertical="center")
         ws.row_dimensions[1].height = 30
 
-        # Subtítulo con fecha
-        ws.merge_cells("A2:D2")
-        sub_cell = ws["A2"]
-        sub_cell.value = "Generado automáticamente por Pipeline de Automatización — Confidencial Operaciones"
-        sub_cell.font = Font(name="Calibri", size=10, italic=True, color="475569")
-        sub_cell.alignment = Alignment(horizontal="center", vertical="center")
+        ws.merge_cells(f"A2:{ultima_col}2")
+        subtitulo = ws["A2"]
+        subtitulo.value = (
+            "Generado por src/excel_report_styler.py a partir de los datos "
+            "del repositorio - datos ficticios"
+        )
+        subtitulo.font = Font(name="Calibri", size=10, italic=True, color="475569")
+        subtitulo.alignment = Alignment(horizontal="center", vertical="center")
         ws.row_dimensions[2].height = 18
 
-        # Encabezados de tabla (Fila 4)
-        for col_idx in range(1, ws.max_column + 1):
-            cell = ws.cell(row=4, column=col_idx)
-            cell.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
-            cell.fill = PatternFill(start_color=dark_navy, end_color=dark_navy, fill_type="solid")
-            cell.alignment = Alignment(horizontal="center", vertical="center")
+        for col in range(1, ws.max_column + 1):
+            celda = ws.cell(row=4, column=col)
+            celda.font = Font(name="Calibri", size=11, bold=True, color="FFFFFF")
+            celda.fill = PatternFill("solid", start_color=AZUL_PROFUNDO)
+            celda.alignment = Alignment(horizontal="center", vertical="center")
         ws.row_dimensions[4].height = 24
 
-        # Filas de datos
-        thin_border = Border(
-            left=Side(style='thin', color='CBD5E1'),
-            right=Side(style='thin', color='CBD5E1'),
-            top=Side(style='thin', color='CBD5E1'),
-            bottom=Side(style='thin', color='CBD5E1')
+        for fila in range(5, ws.max_row + 1):
+            ws.row_dimensions[fila].height = 20
+            for col in range(1, ws.max_column + 1):
+                celda = ws.cell(row=fila, column=col)
+                celda.border = borde
+                celda.font = Font(name="Calibri", size=10)
+                celda.alignment = Alignment(
+                    horizontal="left" if col == 1 else "center", vertical="center"
+                )
+                if celda.value == ESTADO_OK:
+                    celda.fill = PatternFill("solid", start_color=VERDE_OK)
+                    celda.font = Font(name="Calibri", size=10, bold=True, color=VERDE_TEXTO)
+                elif celda.value == ESTADO_ALERTA:
+                    celda.fill = PatternFill("solid", start_color=AMBAR_ALERTA)
+                    celda.font = Font(name="Calibri", size=10, bold=True, color=AMBAR_TEXTO)
+
+        for columna in ws.columns:
+            ancho = max(len(str(celda.value or "")) for celda in columna)
+            letra = get_column_letter(columna[0].column)
+            ws.column_dimensions[letra].width = max(ancho + 4, 15)
+
+    wb.save(ruta)
+
+
+def generar_reporte() -> Path:
+    """Arma el Excel con formato a partir de los datos del repositorio."""
+    facturas = pd.read_excel(DATA_DIR / "FacturasEmitidas.xlsx")
+    ajustes = pd.read_excel(DATA_DIR / "AjustesPostFacturacion.xlsx")
+
+    hojas = {
+        "Resumen_KPIs": calcular_kpis(facturas, ajustes),
+        "Detalle_Ciclos": calcular_detalle_ciclos(facturas, ajustes),
+    }
+
+    bitacora = cargar_bitacora()
+    if bitacora is not None:
+        hojas["Bitacora"] = bitacora
+    else:
+        print(
+            "Aviso: no existe data/BitacoraDecisiones.csv. Ejecuta "
+            "'python src/automation_engine.py' para incluir la hoja Bitacora."
         )
 
-        for row_idx in range(5, ws.max_row + 1):
-            ws.row_dimensions[row_idx].height = 20
-            for col_idx in range(1, ws.max_column + 1):
-                c = ws.cell(row=row_idx, column=col_idx)
-                c.border = thin_border
-                c.font = Font(name="Calibri", size=10)
-                if col_idx == 1:
-                    c.alignment = Alignment(horizontal="left", vertical="center")
-                else:
-                    c.alignment = Alignment(horizontal="center", vertical="center")
+    with pd.ExcelWriter(SALIDA, engine="openpyxl") as writer:
+        for nombre, df in hojas.items():
+            df.to_excel(writer, sheet_name=nombre, index=False, startrow=3)
 
-                # Pintar estados condicionalmente
-                if c.value == "CUMPLIDO":
-                    c.fill = PatternFill(start_color=green_ok, end_color=green_ok, fill_type="solid")
-                    c.font = Font(name="Calibri", size=10, bold=True, color="166534")
-                elif c.value == "EN OBSERVACION":
-                    c.fill = PatternFill(start_color=yellow_warn, end_color=yellow_warn, fill_type="solid")
-                    c.font = Font(name="Calibri", size=10, bold=True, color="92400E")
+    aplicar_formato(SALIDA)
 
-        # Auto-ajuste de ancho de columnas
-        for col in ws.columns:
-            max_len = max(len(str(cell.value or '')) for cell in col)
-            col_letter = get_column_letter(col[0].column)
-            ws.column_dimensions[col_letter].width = max(max_len + 4, 15)
+    print(f"Hojas generadas: {', '.join(hojas)}")
+    print(f"Reporte escrito en: {SALIDA}")
+    return SALIDA
 
-    wb.save(excel_path)
-    print(f"[OK] Reporte con formato corporativo guardado exitosamente.")
 
 if __name__ == "__main__":
-    generar_reporte_ejecutivo_estilizado()
+    if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+    generar_reporte()
