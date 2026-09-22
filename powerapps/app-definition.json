@@ -1,0 +1,47 @@
+{
+  "_comment": "Metadato de referencia de la Canvas App. NO es un .msapp exportable: describe la app que se construiria siguiendo powerapps/app-architecture.md. La app no esta desplegada en ningun tenant.",
+  "name": "TelecomPostBillingAdjustmentManager",
+  "displayName": "Telecom - Gestor de Ajustes de Post Facturacion",
+  "description": "Registro y aprobacion de ajustes de post facturacion con validacion de topes y bitacora de decisiones.",
+  "version": "1.2.0",
+  "status": "specification",
+  "targetEnvironment": "Power Apps Developer Plan",
+  "formFactor": "Tablet",
+  "author": "Martin Zapana Berrospi",
+  "dataSources": [
+    {
+      "name": "FacturasEmitidas",
+      "type": "Dataverse",
+      "access": "read-only",
+      "primaryKey": "IdFactura",
+      "alternateKey": "NumeroRecibo",
+      "seed": "data/FacturasEmitidas.xlsx"
+    },
+    {
+      "name": "AjustesPostFacturacion",
+      "type": "Dataverse",
+      "access": "read-write",
+      "primaryKey": "IdAjuste",
+      "seed": "data/AjustesPostFacturacion.xlsx"
+    }
+  ],
+  "screens": [
+    "DashboardScreen",
+    "NewAdjustmentScreen",
+    "ApprovalQueueScreen",
+    "DetailAuditScreen"
+  ],
+  "components": [
+    "CorporateHeader",
+    "MetricKpiCard",
+    "AdjustmentStatusBadge",
+    "AuditHistoryTimeline"
+  ],
+  "connectedFlows": [
+    "FlowNotificarAprobacionAjuste"
+  ],
+  "securityGroups": {
+    "approvalQueue": "M365_Jefatura_PostFacturacion"
+  },
+  "businessRules": "docs/01-business-rules.md"
+}

@@ -5,11 +5,11 @@ Implementa en Python las mismas reglas que la Canvas App valida con Power Fx y
 que el flujo de Power Automate ejecuta en la nube, de modo que puedan probarse
 y auditarse sin desplegar nada en un tenant de Microsoft 365.
 
-Reglas (ver docs/PROCESS_BLUEPRINT.md):
+Reglas (fuente de verdad: docs/01-business-rules.md):
   R1. El ajuste no puede superar el monto de la factura original.
   R2. Monto <= S/ 50.00            -> aprobación automática.
   R3. S/ 50.00 < monto <= S/ 500   -> aprobación de jefatura vía Teams.
-  R4. Monto > S/ 500.00            -> aprobación de jefatura y visto de gerencia.
+  R4. Monto > S/ 500.00            -> escala a gerencia.
   R5. La factura referida debe existir en el maestro de facturas emitidas.
 
 Uso:

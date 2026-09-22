@@ -1,0 +1,110 @@
+{
+  "_comment": "Extracto de la definicion del flujo 01 (Flow_Aprobacion_Ajuste_PostFacturacion). Referencia de logica, no importable directamente: ver powerautomate/README.md. Los topes 50.0 y 500.0 corresponden a las reglas R2, R3 y R4 de docs/01-business-rules.md.",
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "triggers": {
+      "Manual_From_PowerApps": {
+        "type": "Request",
+        "kind": "PowerApp",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "IdAjuste": { "type": "string" },
+              "NumeroRecibo": { "type": "string" },
+              "ClienteNombre": { "type": "string" },
+              "MontoSolicitado": { "type": "number" },
+              "TipoIncidencia": { "type": "string" },
+              "Analista": { "type": "string" }
+            },
+            "required": ["IdAjuste", "NumeroRecibo", "MontoSolicitado"]
+          }
+        }
+      }
+    },
+    "actions": {
+      "Check_Auto_Approval_Threshold": {
+        "type": "If",
+        "description": "R2: hasta S/ 50.00 inclusive se aprueba automaticamente.",
+        "expression": {
+          "greater": ["@triggerBody()?['MontoSolicitado']", 50.0]
+        },
+        "actions": {
+          "Check_Management_Threshold": {
+            "type": "If",
+            "description": "R3 vs R4: hasta S/ 500.00 decide jefatura; por encima, gerencia.",
+            "expression": {
+              "greater": ["@triggerBody()?['MontoSolicitado']", 500.0]
+            },
+            "actions": {
+              "Post_Adaptive_Card_To_Management": {
+                "type": "OpenApiConnection",
+                "description": "R4: escala a gerencia y espera su respuesta.",
+                "inputs": {
+                  "host": { "connectionName": "shared_teams" },
+                  "operationId": "PostCardToConversationAndWait",
+                  "parameters": {
+                    "recipient": "gerencia.operaciones@telecom.com",
+                    "messageBody": "@{variables('AdaptiveCardPayload')}"
+                  }
+                }
+              }
+            },
+            "else": {
+              "actions": {
+                "Post_Adaptive_Card_To_Supervisor": {
+                  "type": "OpenApiConnection",
+                  "description": "R3: escala a jefatura y espera su respuesta.",
+                  "inputs": {
+                    "host": { "connectionName": "shared_teams" },
+                    "operationId": "PostCardToConversationAndWait",
+                    "parameters": {
+                      "recipient": "jefatura.postfacturacion@telecom.com",
+                      "messageBody": "@{variables('AdaptiveCardPayload')}"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "else": {
+          "actions": {
+            "Auto_Approve_Adjustment": {
+              "type": "OpenApiConnection",
+              "description": "R2: marca APROBADO_AUTO sin intervencion humana.",
+              "inputs": {
+                "host": { "connectionName": "shared_commondataservice" },
+                "operationId": "UpdateRecord",
+                "parameters": {
+                  "entityName": "AjustesPostFacturacion",
+                  "recordId": "@triggerBody()?['IdAjuste']",
+                  "item/EstadoReclamo": "APROBADO_AUTO",
+                  "item/MontoReconocido": "@triggerBody()?['MontoSolicitado']"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Write_Decision_Log": {
+        "type": "OpenApiConnection",
+        "description": "Bitacora: un registro por dictamen, con aprobador y motivo.",
+        "runAfter": { "Check_Auto_Approval_Threshold": ["Succeeded"] },
+        "inputs": {
+          "host": { "connectionName": "shared_commondataservice" },
+          "operationId": "CreateRecord",
+          "parameters": { "entityName": "BitacoraDecisiones" }
+        }
+      },
+      "Notify_Analyst": {
+        "type": "OpenApiConnection",
+        "runAfter": { "Write_Decision_Log": ["Succeeded"] },
+        "inputs": {
+          "host": { "connectionName": "shared_office365" },
+          "operationId": "SendEmailV2"
+        }
+      }
+    }
+  }
+}
