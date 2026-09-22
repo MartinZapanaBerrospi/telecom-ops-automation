@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="960" height="600" rx="10" fill="#F8FAFC"/>
+  <rect x="0" y="0" width="960" height="56" rx="10" fill="#005A9E"/>
+  <rect x="0" y="40" width="960" height="16" fill="#005A9E"/>
+  <text x="28" y="33" font-size="15" fill="#FFFFFF">←</text>
+  <text x="52" y="33" font-size="14.5" font-weight="600" fill="#FFFFFF">Nueva solicitud de ajuste</text>
+  <circle cx="908" cy="28" r="12" fill="#FFFFFF" opacity="0.25"/>
+  <text x="908" y="32" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="middle">MZ</text>
+
+  <text x="28" y="88" font-size="11" font-weight="600" fill="#64748B" letter-spacing="0.6">NEWADJUSTMENTSCREEN</text>
+
+  <rect x="28" y="100" width="560" height="440" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+
+  <text x="52" y="132" font-size="11" font-weight="600" fill="#475569">NÚMERO DE RECIBO</text>
+  <rect x="52" y="142" width="300" height="34" rx="6" fill="#FFFFFF" stroke="#10B981" stroke-width="1.6"/>
+  <text x="66" y="164" font-size="12.5" fill="#0F172A">F001-00045213</text>
+  <circle cx="368" cy="159" r="8" fill="#10B981"/>
+  <path d="M364.5 159 L367 161.5 L371.5 156.5" stroke="#FFFFFF" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="384" y="163" font-size="11" fill="#166534">Factura validada</text>
+
+  <rect x="52" y="188" width="512" height="68" rx="6" fill="#F1F5F9"/>
+  <text x="68" y="208" font-size="10" font-weight="600" fill="#64748B">AUTO-RELLENADO POR LookUp(FacturasEmitidas)</text>
+  <text x="68" y="228" font-size="10.5" fill="#64748B">Cliente</text>
+  <text x="68" y="245" font-size="12" font-weight="600" fill="#0F172A">María Elena Rodríguez Prado</text>
+  <text x="300" y="228" font-size="10.5" fill="#64748B">Plan</text>
+  <text x="300" y="245" font-size="11.5" fill="#0F172A">Plan Móvil Conectado 49.90</text>
+  <text x="474" y="228" font-size="10.5" fill="#64748B">Facturado</text>
+  <text x="474" y="245" font-size="13" font-weight="700" fill="#005A9E">S/ 49.90</text>
+
+  <text x="52" y="288" font-size="11" font-weight="600" fill="#475569">TIPO DE INCIDENCIA</text>
+  <rect x="52" y="298" width="300" height="34" rx="6" fill="#FFFFFF" stroke="#CBD5E1"/>
+  <text x="66" y="320" font-size="12" fill="#0F172A">CARGO_DUPLICADO</text>
+  <text x="334" y="320" font-size="9" fill="#64748B">▼</text>
+
+  <text x="388" y="288" font-size="11" font-weight="600" fill="#475569">MONTO SOLICITADO (S/)</text>
+  <rect x="388" y="298" width="176" height="34" rx="6" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.6"/>
+  <text x="402" y="320" font-size="12.5" font-weight="600" fill="#991B1B">120.00</text>
+
+  <text x="52" y="356" font-size="11" font-weight="600" fill="#475569">JUSTIFICACIÓN TÉCNICA</text>
+  <rect x="52" y="366" width="512" height="56" rx="6" fill="#FFFFFF" stroke="#CBD5E1"/>
+  <text x="66" y="387" font-size="11.5" fill="#0F172A">Doble cobro del servicio de valor agregado digital no activado</text>
+  <text x="66" y="404" font-size="11.5" fill="#0F172A">por el cliente en el ciclo C15.</text>
+  <text x="552" y="436" font-size="9.5" fill="#64748B" text-anchor="end">96 / mín. 15 caracteres</text>
+
+  <rect x="52" y="446" width="512" height="48" rx="6" fill="#FEE2E2" stroke="#FCA5A5"/>
+  <circle cx="76" cy="470" r="10" fill="#EF4444"/>
+  <text x="76" y="474" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">!</text>
+  <text x="96" y="466" font-size="11" font-weight="600" fill="#991B1B">R1 — El monto solicitado no puede ser mayor al total de la factura.</text>
+  <text x="96" y="482" font-size="11" fill="#991B1B">Solicitado S/ 120.00 contra una factura de S/ 49.90.</text>
+
+  <rect x="412" y="506" width="152" height="36" rx="6" fill="#CBD5E1"/>
+  <text x="488" y="529" font-size="12.5" font-weight="600" fill="#F8FAFC" text-anchor="middle">Enviar a aprobación</text>
+  <text x="302" y="529" font-size="10.5" fill="#94A3B8">Botón bloqueado</text>
+
+  <rect x="612" y="100" width="320" height="440" rx="8" fill="#0F172A"/>
+  <text x="636" y="130" font-size="11" font-weight="600" fill="#94A3B8" letter-spacing="0.6">REGLA QUE SE ESTÁ APLICANDO</text>
+  <rect x="636" y="146" width="272" height="1" fill="#1E293B"/>
+
+  <text x="636" y="176" font-size="12" font-weight="700" fill="#F87171">R1 · Tope de la factura original</text>
+  <text x="636" y="198" font-size="11" fill="#CBD5E1">El ajuste nunca puede superar lo que</text>
+  <text x="636" y="214" font-size="11" fill="#CBD5E1">realmente se facturó. Se valida en la app,</text>
+  <text x="636" y="230" font-size="11" fill="#CBD5E1">antes de guardar: la solicitud inválida</text>
+  <text x="636" y="246" font-size="11" fill="#CBD5E1">nunca llega a la bandeja de jefatura.</text>
+
+  <rect x="636" y="266" width="272" height="86" rx="6" fill="#1E293B"/>
+  <text x="650" y="286" font-size="9.5" fill="#64748B">btnEnviarSolicitud.OnSelect</text>
+  <text x="650" y="306" font-size="10" fill="#93C5FD" font-family="Consolas, monospace">If(</text>
+  <text x="650" y="321" font-size="10" fill="#E2E8F0" font-family="Consolas, monospace">  Value(txt...) &gt; varMontoOriginal,</text>
+  <text x="650" y="336" font-size="10" fill="#FCA5A5" font-family="Consolas, monospace">  Notify("...", Error),</text>
+  <text x="650" y="351" font-size="10" fill="#86EFAC" font-family="Consolas, monospace">  Patch(...)  )</text>
+
+  <rect x="636" y="372" width="272" height="1" fill="#1E293B"/>
+  <text x="636" y="398" font-size="11" font-weight="600" fill="#94A3B8">Si el monto fuese válido…</text>
+  <g font-size="10.5">
+    <circle cx="644" cy="418" r="3.5" fill="#10B981"/>
+    <text x="658" y="422" fill="#CBD5E1">≤ S/ 50.00 → APROBADO_AUTO</text>
+    <circle cx="644" cy="440" r="3.5" fill="#F59E0B"/>
+    <text x="658" y="444" fill="#CBD5E1">≤ S/ 500.00 → PENDIENTE_JEFATURA</text>
+    <circle cx="644" cy="462" r="3.5" fill="#EF4444"/>
+    <text x="658" y="466" fill="#CBD5E1">&gt; S/ 500.00 → PENDIENTE_GERENCIA</text>
+  </g>
+  <text x="636" y="500" font-size="10" fill="#64748B">Las mismas reglas están probadas en</text>
+  <text x="636" y="515" font-size="10" fill="#64748B" font-family="Consolas, monospace">tests/test_reglas_aprobacion.py</text>
+
+  <text x="28" y="566" font-size="10.5" fill="#94A3B8">Maqueta de referencia · el proyecto no está desplegado en un tenant</text>
+</svg>

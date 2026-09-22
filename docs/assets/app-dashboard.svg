@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="960" height="600" rx="10" fill="#F8FAFC"/>
+  <rect x="0" y="0" width="960" height="56" rx="10" fill="#005A9E"/>
+  <rect x="0" y="40" width="960" height="16" fill="#005A9E"/>
+  <circle cx="30" cy="28" r="11" fill="#FFFFFF" opacity="0.9"/>
+  <text x="30" y="33" font-size="12" font-weight="700" fill="#005A9E" text-anchor="middle">T</text>
+  <text x="52" y="33" font-size="14.5" font-weight="600" fill="#FFFFFF">Gestor de Ajustes de Post Facturación</text>
+  <rect x="690" y="16" width="112" height="25" rx="5" fill="#FFFFFF" opacity="0.18"/>
+  <text x="702" y="33" font-size="11.5" fill="#FFFFFF">Ciclo: C28 ▾</text>
+  <circle cx="828" cy="28" r="12" fill="#FFFFFF" opacity="0.25"/>
+  <text x="828" y="32" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="middle">MZ</text>
+  <text x="850" y="32" font-size="11.5" fill="#FFFFFF" opacity="0.92">Analista</text>
+
+  <text x="28" y="88" font-size="11" font-weight="600" fill="#64748B" letter-spacing="0.6">DASHBOARDSCREEN</text>
+
+  <g>
+    <rect x="28" y="100" width="218" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="28" y="100" width="4" height="82" rx="2" fill="#005A9E"/>
+    <text x="46" y="124" font-size="10.5" fill="#64748B">SOLICITUDES DEL CICLO</text>
+    <text x="46" y="156" font-size="27" font-weight="700" fill="#0F172A">4</text>
+    <text x="46" y="173" font-size="10.5" fill="#64748B">CountRows(colAjustes)</text>
+  </g>
+  <g>
+    <rect x="258" y="100" width="218" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="258" y="100" width="4" height="82" rx="2" fill="#005A9E"/>
+    <text x="276" y="124" font-size="10.5" fill="#64748B">MONTO EN DISPUTA</text>
+    <text x="276" y="156" font-size="27" font-weight="700" fill="#0F172A">S/ 295.60</text>
+    <text x="276" y="173" font-size="10.5" fill="#64748B">Sum(colAjustes, MontoReclamado)</text>
+  </g>
+  <g>
+    <rect x="488" y="100" width="218" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="488" y="100" width="4" height="82" rx="2" fill="#10B981"/>
+    <text x="506" y="124" font-size="10.5" fill="#64748B">TASA DE APROBACIÓN</text>
+    <text x="506" y="156" font-size="27" font-weight="700" fill="#166534">50.0 %</text>
+    <text x="506" y="173" font-size="10.5" fill="#64748B">2 de 4 resueltas</text>
+  </g>
+  <g>
+    <rect x="718" y="100" width="214" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <rect x="718" y="100" width="4" height="82" rx="2" fill="#F59E0B"/>
+    <text x="736" y="124" font-size="10.5" fill="#64748B">PENDIENTES DE JEFATURA</text>
+    <text x="736" y="156" font-size="27" font-weight="700" fill="#92400E">2</text>
+    <text x="736" y="173" font-size="10.5" fill="#64748B">esperan tarjeta en Teams</text>
+  </g>
+
+  <rect x="28" y="200" width="420" height="32" rx="6" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <circle cx="46" cy="216" r="5.5" fill="none" stroke="#94A3B8" stroke-width="1.6"/>
+  <line x1="50" y1="220" x2="54" y2="224" stroke="#94A3B8" stroke-width="1.6" stroke-linecap="round"/>
+  <text x="64" y="220" font-size="11.5" fill="#94A3B8">Buscar por DNI / RUC o número de recibo…</text>
+  <rect x="460" y="200" width="150" height="32" rx="6" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="474" y="220" font-size="11.5" fill="#0F172A">Estado: TODOS</text>
+  <text x="590" y="220" font-size="9" fill="#64748B">▼</text>
+
+  <rect x="28" y="248" width="904" height="34" rx="6" fill="#0F172A"/>
+  <text x="46" y="269" font-size="10.5" font-weight="600" fill="#FFFFFF">ID AJUSTE</text>
+  <text x="156" y="269" font-size="10.5" font-weight="600" fill="#FFFFFF">RECIBO</text>
+  <text x="282" y="269" font-size="10.5" font-weight="600" fill="#FFFFFF">CLIENTE</text>
+  <text x="496" y="269" font-size="10.5" font-weight="600" fill="#FFFFFF">INCIDENCIA</text>
+  <text x="700" y="269" font-size="10.5" font-weight="600" fill="#FFFFFF" text-anchor="end">MONTO</text>
+  <text x="724" y="269" font-size="10.5" font-weight="600" fill="#FFFFFF">ESTADO</text>
+
+  <g font-size="11" fill="#0F172A">
+    <rect x="28" y="282" width="904" height="42" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="46" y="308">AJU-2026-001</text>
+    <text x="156" y="308" fill="#475569">F001-00045211</text>
+    <text x="282" y="308">Juan Carlos Pérez Gómez</text>
+    <text x="496" y="308" font-size="10" fill="#475569">SOBREFACTURACION_DATOS</text>
+    <text x="700" y="308" text-anchor="end" font-weight="600">S/ 20.00</text>
+    <rect x="724" y="294" width="160" height="20" rx="10" fill="#DCFCE7"/>
+    <text x="804" y="308" font-size="9.5" font-weight="700" fill="#166534" text-anchor="middle">APROBADO_AUTO</text>
+
+    <rect x="28" y="324" width="904" height="42" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <text x="46" y="350">AJU-2026-002</text>
+    <text x="156" y="350" fill="#475569">F001-00045215</text>
+    <text x="282" y="350">Carlos Alberto Mendoza Solís</text>
+    <text x="496" y="350" font-size="10" fill="#475569">DESFASE_ROAMING</text>
+    <text x="700" y="350" text-anchor="end" font-weight="600">S/ 85.50</text>
+    <rect x="724" y="336" width="160" height="20" rx="10" fill="#DCFCE7"/>
+    <text x="804" y="350" font-size="9.5" font-weight="700" fill="#166534" text-anchor="middle">APROBADO_JEFATURA</text>
+
+    <rect x="28" y="366" width="904" height="42" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="46" y="392">AJU-2026-003</text>
+    <text x="156" y="392" fill="#475569">F001-00045218</text>
+    <text x="282" y="392">Corporación Minera Pampa Azul S.A.C.</text>
+    <text x="496" y="392" font-size="10" fill="#475569">DESCUENTO_NO_APLICADO</text>
+    <text x="700" y="392" text-anchor="end" font-weight="600">S/ 145.50</text>
+    <rect x="724" y="378" width="160" height="20" rx="10" fill="#FEF3C7"/>
+    <text x="804" y="392" font-size="9.5" font-weight="700" fill="#92400E" text-anchor="middle">PENDIENTE_JEFATURA</text>
+
+    <rect x="28" y="408" width="904" height="42" fill="#F8FAFC" stroke="#E2E8F0"/>
+    <text x="46" y="434">AJU-2026-004</text>
+    <text x="156" y="434" fill="#475569">F001-00045219</text>
+    <text x="282" y="434">Roberto Alonso Chávez Ramos</text>
+    <text x="496" y="434" font-size="10" fill="#475569">CARGO_DUPLICADO</text>
+    <text x="700" y="434" text-anchor="end" font-weight="600">S/ 44.60</text>
+    <rect x="724" y="420" width="160" height="20" rx="10" fill="#FEF3C7"/>
+    <text x="804" y="434" font-size="9.5" font-weight="700" fill="#92400E" text-anchor="middle">PENDIENTE_JEFATURA</text>
+  </g>
+
+  <rect x="28" y="468" width="904" height="52" rx="8" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <circle cx="52" cy="494" r="9" fill="#005A9E"/>
+  <text x="52" y="498" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">i</text>
+  <text x="72" y="490" font-size="11" fill="#1E3A8A">El estado de cada fila lo asigna el motor de reglas, no el analista. Las filas en PENDIENTE_JEFATURA</text>
+  <text x="72" y="506" font-size="11" fill="#1E3A8A">ya tienen una tarjeta adaptable esperando respuesta en Microsoft Teams.</text>
+
+  <rect x="742" y="536" width="190" height="40" rx="20" fill="#005A9E"/>
+  <text x="837" y="561" font-size="12.5" font-weight="600" fill="#FFFFFF" text-anchor="middle">+  Nueva Solicitud</text>
+  <text x="28" y="561" font-size="10.5" fill="#94A3B8">Maqueta de referencia · el proyecto no está desplegado en un tenant</text>
+</svg>

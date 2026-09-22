@@ -1,5 +1,19 @@
-# ⚡ Biblioteca de Fórmulas Power Fx
-### Funciones Core implementadas en la aplicación de Post Facturación
+# Fórmulas Power Fx
+
+Las fórmulas de la Canvas App, una por propiedad de control. Cada bloque indica entre
+paréntesis dónde va pegada.
+
+Los nombres de control siguen las [convenciones del README](README.md#convenciones-de-nombres)
+y los nombres de tabla y columna vienen de
+[`docs/02-data-model.md`](../docs/02-data-model.md): si al construir la app usas otros,
+hay que ajustar las fórmulas.
+
+| Fórmula | Propiedad | Regla que implementa |
+|---|---|---|
+| [1. Inicialización](#1-inicialización-de-la-aplicación-apponstart) | `App.OnStart` | — |
+| [2. Búsqueda de recibo](#2-auto-relleno-de-datos-al-buscar-recibo-txtnumeroreciboonchange) | `txtNumeroRecibo.OnChange` | **R5** |
+| [3. Envío de solicitud](#3-registro-y-envío-de-solicitud-con-validación-btnenviarsolicitudonselect) | `btnEnviarSolicitud.OnSelect` | **R1** |
+| [4. Filtrado de galería](#4-filtrado-dinámico-de-galería-galajustesitems) | `galAjustes.Items` | — |
 
 ---
 

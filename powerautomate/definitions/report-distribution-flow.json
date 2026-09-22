@@ -1,0 +1,55 @@
+{
+  "_comment": "Extracto de la definicion del flujo 02 (Flow_Distribucion_Diaria_Reporte_Operacional). Referencia de logica, no importable directamente: ver powerautomate/README.md.",
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "triggers": {
+      "Recurrence_Weekdays_8AM": {
+        "type": "Recurrence",
+        "description": "Lunes a viernes a las 08:00, hora de Lima (UTC-5).",
+        "recurrence": {
+          "frequency": "Week",
+          "interval": 1,
+          "schedule": {
+            "hours": ["8"],
+            "minutes": [0],
+            "weekDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+          },
+          "timeZone": "SA Pacific Standard Time"
+        }
+      }
+    },
+    "actions": {
+      "Get_Operational_Report": {
+        "type": "OpenApiConnection",
+        "description": "Obtiene el Excel que genera src/excel_report_styler.py.",
+        "inputs": {
+          "host": { "connectionName": "shared_sharepointonline" },
+          "operationId": "GetFileContent"
+        }
+      },
+      "Send_Report_Email": {
+        "type": "OpenApiConnection",
+        "description": "Correo HTML con el resumen de KPIs y el Excel adjunto.",
+        "runAfter": { "Get_Operational_Report": ["Succeeded"] },
+        "inputs": {
+          "host": { "connectionName": "shared_office365" },
+          "operationId": "SendEmailV2",
+          "parameters": {
+            "emailMessage/To": "jefatura.postfacturacion@telecom.com",
+            "emailMessage/Subject": "Reporte operacional de post facturacion - @{formatDateTime(utcNow(), 'dd/MM/yyyy')}"
+          }
+        }
+      },
+      "Post_Summary_To_Teams": {
+        "type": "OpenApiConnection",
+        "description": "Aviso en el canal de operaciones.",
+        "runAfter": { "Send_Report_Email": ["Succeeded"] },
+        "inputs": {
+          "host": { "connectionName": "shared_teams" },
+          "operationId": "PostMessageToChannel",
+          "parameters": { "channelName": "Soporte-Operaciones-Facturacion" }
+        }
+      }
+    }
+  }
+}
