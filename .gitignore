@@ -1,13 +1,21 @@
+# --- Python ---
 __pycache__/
 *.py[cod]
 *$py.class
-*.csv
-.env
+.pytest_cache/
 .venv/
-env/
 venv/
+env/
+.env
+
+# --- Sistema operativo ---
 .DS_Store
 Thumbs.db
 
-# Salidas generadas
+# --- Artefactos generados por los scripts de src/ ---
+# Los datasets semilla (data/*.xlsx) SI se versionan: son la entrada del
+# proyecto y permiten leerlo sin ejecutar nada. Lo que sigue es salida.
 data/BitacoraDecisiones.csv
+data/Reporte_Gerencial_Facturacion.xlsx
+data/Reporte_Gerencial_Facturacion_Estilizado.xlsx
+~$*.xlsx
